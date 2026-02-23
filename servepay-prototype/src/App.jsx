@@ -1,353 +1,247 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  CartesianGrid,
+  Legend,
+} from "recharts";
 
 export default function App() {
-  const [jobs, setJobs] = useState([
+  const [view, setView] = useState("job");
+
+  const jobs = [
     {
-      id: 1,
       name: "Smith Water Heater Install",
-      type: "Water Heater",
-      invoiceTotal: 1800,
-      paidAmount: 1800,
-      materials: 650,
-      labor: 400,
-      other: 50,
+      invoice: 2000,
+      paid: 1500,
+      materials: 500,
+      labor: 500,
+      other: 200,
     },
     {
-      id: 2,
-      name: "Johnson Panel Upgrade",
-      type: "Electrical Panel",
-      invoiceTotal: 2400,
-      paidAmount: 1200,
-      materials: 900,
-      labor: 600,
+      name: "Johnson AC Repair",
+      invoice: 1200,
+      paid: 1200,
+      materials: 200,
+      labor: 400,
       other: 100,
     },
     {
-      id: 3,
-      name: "Drain Cleanout - Elm St",
-      type: "Drain Service",
-      invoiceTotal: 450,
-      paidAmount: 450,
-      materials: 75,
-      labor: 120,
-      other: 0,
+      name: "Brown Panel Upgrade",
+      invoice: 3500,
+      paid: 3500,
+      materials: 1200,
+      labor: 900,
+      other: 300,
     },
-  ]);
+  ];
 
-  const [loggedIn, setLoggedIn] = useState(false);
-  
-  const [invoiceTotal, setInvoiceTotal] = useState(0);
-const [paidAmount, setPaidAmount] = useState(0);
+  const selectedJob = jobs[0];
 
-const [materialsCost, setMaterialsCost] = useState(0);
-const [laborCost, setLaborCost] = useState(0);
-const [otherCost, setOtherCost] = useState(0);
-  const totalExpenses = materialsCost + laborCost + otherCost;
+  const totalCost =
+    selectedJob.materials +
+    selectedJob.labor +
+    selectedJob.other;
 
-const expectedProfit = invoiceTotal - totalExpenses;
-const realizedProfit = paidAmount - totalExpenses;
+  const profit = selectedJob.invoice - totalCost;
+  const margin = ((profit / selectedJob.invoice) * 100).toFixed(1);
 
-const margin =
-  invoiceTotal > 0
-    ? ((expectedProfit / invoiceTotal) * 100).toFixed(1)
-    : 0;
+  const totalRevenue = jobs.reduce((sum, j) => sum + j.invoice, 0);
+  const totalCosts = jobs.reduce(
+    (sum, j) => sum + j.materials + j.labor + j.other,
+    0
+  );
+  const totalProfit = totalRevenue - totalCosts;
+  const avgMargin = (
+    (totalProfit / totalRevenue) *
+    100
+  ).toFixed(1);
 
-const outstanding = invoiceTotal - paidAmount;
-  const [selectedJobId, setSelectedJobId] = useState(1);
+  const businessTrendData = jobs.map((j) => {
+    const cost = j.materials + j.labor + j.other;
+    return {
+      name: j.name,
+      Revenue: j.invoice,
+      Profit: j.invoice - cost,
+    };
+  });
 
-  const selectedJob = jobs.find((job) => job.id === selectedJobId);
-
-  const updateJob = (field, value) => {
-    setJobs((prev) =>
-      prev.map((job) =>
-        job.id === selectedJobId ? { ...job, [field]: Number(value) } : job
-      )
-    );
-  };
-
-  const calculateMetrics = (job) => {
-    const totalCosts = job.materials + job.labor + job.other;
-    const expectedProfit = job.invoiceTotal - totalCosts;
-    const realizedProfit = job.paidAmount - totalCosts;
-    const margin =
-      job.invoiceTotal > 0
-        ? ((expectedProfit / job.invoiceTotal) * 100).toFixed(1)
-        : 0;
-
-    return { totalCosts, expectedProfit, realizedProfit, margin };
-  };
+  const jobBarData = [
+    { name: "Invoice", value: selectedJob.invoice },
+    { name: "Cost", value: totalCost },
+    { name: "Profit", value: profit },
+  ];
 
   return (
-    if (!loggedIn) {
-  return (
-    <div className="min-h-screen bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center p-6">
-      <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md text-gray-800">
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          ServePay Contractor Portal
-        </h1>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-6xl mx-auto">
 
-        <div className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email Address"
-            className="w-full border p-3 rounded"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full border p-3 rounded"
-          />
+        {/* Toggle */}
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={() => setView("job")}
+            className={`px-4 py-2 rounded ${
+              view === "job"
+                ? "bg-indigo-600 text-white"
+                : "bg-white"
+            }`}
+          >
+            Job View
+          </button>
 
           <button
-            onClick={() => setLoggedIn(true)}
-            className="w-full bg-indigo-600 text-white p-3 rounded font-semibold hover:bg-indigo-700"
+            onClick={() => setView("business")}
+            className={`px-4 py-2 rounded ${
+              view === "business"
+                ? "bg-indigo-600 text-white"
+                : "bg-white"
+            }`}
           >
-            Login
+            Business View
           </button>
         </div>
 
-        <p className="text-sm text-gray-500 mt-4 text-center">
-          Demo Access – No real login required
-        </p>
-      </div>
-    </div>
-  );
-}
-    <div className="min-h-screen bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
-      <div className="max-w-6xl mx-auto grid grid-cols-3 gap-6">
+        {/* ================= JOB VIEW ================= */}
+        {view === "job" && (
+          <div className="bg-white rounded-xl shadow p-6 space-y-6">
 
-        {/* Job List */}
-        <div className="col-span-1 bg-white text-gray-800 rounded-xl shadow-xl p-4">
-          <h2 className="text-xl font-bold mb-4">Jobs</h2>
+            <h2 className="text-2xl font-bold">
+              {selectedJob.name}
+            </h2>
 
-          {jobs.map((job) => {
-            const { margin } = calculateMetrics(job);
-            return (
-              <div
-                key={job.id}
-                onClick={() => setSelectedJobId(job.id)}
-                className={`p-3 mb-3 rounded-lg cursor-pointer border ${
-                  selectedJobId === job.id
-                    ? "bg-indigo-100 border-indigo-400"
-                    : "bg-gray-50"
-                }`}
-              >
-                <p className="font-semibold">{job.name}</p>
-                <p className="text-sm text-gray-600">{job.type}</p>
-                <p className="text-sm font-bold text-green-600">
-                  {margin}% Margin
+            {/* Snapshot */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+              <div>
+                <p className="text-gray-500 text-sm">Invoice</p>
+                <p className="text-xl font-bold">
+                  ${selectedJob.invoice}
                 </p>
               </div>
-            );
-          })}
-        </div>
+              <div>
+                <p className="text-gray-500 text-sm">Collected</p>
+                <p className="text-xl font-bold">
+                  ${selectedJob.paid}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Total Cost</p>
+                <p className="text-xl font-bold">
+                  ${totalCost}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Profit</p>
+                <p
+                  className={`text-xl font-bold ${
+                    profit >= 0
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  ${profit}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Margin</p>
+                <p className="text-xl font-bold">
+                  {margin}%
+                </p>
+              </div>
+            </div>
 
-        {/* Job Detail */}
-        <div className="col-span-2 bg-white text-gray-800 rounded-xl shadow-xl p-6">
-          <h1 className="text-2xl font-bold mb-6">
-            {selectedJob.name}
-          </h1>
+            {/* Bar Chart */}
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={jobBarData}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="value" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
-          {/* Revenue */}
-          <div className="mb-6">
-            <h2 className="font-semibold text-lg mb-2">Revenue</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="number"
-                value={selectedJob.invoiceTotal}
-                onChange={(e) =>
-                  updateJob("invoiceTotal", e.target.value)
-                }
-                className="border p-2 rounded"
-                placeholder="Invoice Total"
-              />
-              <input
-                type="number"
-                value={selectedJob.paidAmount}
-                onChange={(e) =>
-                  updateJob("paidAmount", e.target.value)
-                }
-                className="border p-2 rounded"
-                placeholder="Paid Amount"
-              />
+            {/* Expense Breakdown */}
+            <div>
+              <h3 className="text-lg font-semibold mb-2">
+                What This Job Cost Me
+              </h3>
+              <div className="grid grid-cols-3 gap-4">
+                <div>Materials: ${selectedJob.materials}</div>
+                <div>Labor: ${selectedJob.labor}</div>
+                <div>Other: ${selectedJob.other}</div>
+              </div>
             </div>
           </div>
+        )}
 
-<div className="mt-8 bg-white text-gray-800 rounded-xl shadow-lg p-6">
+        {/* ================= BUSINESS VIEW ================= */}
+        {view === "business" && (
+          <div className="bg-white rounded-xl shadow p-6 space-y-6">
 
-  <h2 className="text-xl font-bold mb-6">
-    Job Financial Overview
-  </h2>
+            <h2 className="text-2xl font-bold">
+              Business Performance
+            </h2>
 
-  {/* ================= INVOICE SECTION ================= */}
-  <div className="mb-6">
-    <h3 className="font-semibold text-lg mb-3 text-indigo-600">
-      Invoice & Payment
-    </h3>
+            {/* Scoreboard */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div>
+                <p className="text-gray-500 text-sm">
+                  Total Revenue
+                </p>
+                <p className="text-xl font-bold">
+                  ${totalRevenue}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">
+                  Total Costs
+                </p>
+                <p className="text-xl font-bold">
+                  ${totalCosts}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">
+                  Net Profit
+                </p>
+                <p className="text-xl font-bold text-green-600">
+                  ${totalProfit}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">
+                  Avg Margin
+                </p>
+                <p className="text-xl font-bold">
+                  {avgMargin}%
+                </p>
+              </div>
+            </div>
 
-    <div className="grid grid-cols-2 gap-4">
-      <div>
-        <label className="block text-sm font-medium mb-1">
-          Total Invoice Amount ($)
-        </label>
-        <input
-          type="number"
-          value={invoiceTotal}
-          onChange={(e) => setInvoiceTotal(Number(e.target.value))}
-          className="border p-2 rounded w-full"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-1">
-          Amount Paid ($)
-        </label>
-        <input
-          type="number"
-          value={paidAmount}
-          onChange={(e) => setPaidAmount(Number(e.target.value))}
-          className="border p-2 rounded w-full"
-        />
-      </div>
-    </div>
-
-    <p className="mt-2 text-sm text-gray-600">
-      Outstanding Balance: ${outstanding}
-    </p>
-  </div>
-
-  {/* ================= EXPENSE SECTION ================= */}
-  <div className="mb-6">
-    <h3 className="font-semibold text-lg mb-3 text-indigo-600">
-      Job Expenses
-    </h3>
-
-    <div className="grid grid-cols-3 gap-4">
-      <div>
-        <label className="block text-sm font-medium mb-1">
-          Materials Cost ($)
-        </label>
-        <input
-          type="number"
-          value={materialsCost}
-          onChange={(e) => setMaterialsCost(Number(e.target.value))}
-          className="border p-2 rounded w-full"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-1">
-          Labor Cost ($)
-        </label>
-        <input
-          type="number"
-          value={laborCost}
-          onChange={(e) => setLaborCost(Number(e.target.value))}
-          className="border p-2 rounded w-full"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-1">
-          Other Expenses ($)
-        </label>
-        <input
-          type="number"
-          value={otherCost}
-          onChange={(e) => setOtherCost(Number(e.target.value))}
-          className="border p-2 rounded w-full"
-        />
-      </div>
-    </div>
-
-    <p className="mt-2 text-sm text-gray-600">
-      Total Job Expenses: ${totalExpenses}
-    </p>
-  </div>
-
-  {/* ================= PROFIT SUMMARY ================= */}
-  <div className="bg-gray-100 p-4 rounded-lg">
-    <h3 className="font-semibold text-lg mb-3">
-      Profit Summary
-    </h3>
-
-    <div className="space-y-2">
-      <p>
-        <strong>Expected Profit:</strong> ${expectedProfit}
-      </p>
-
-      <p>
-        <strong>Realized Profit (Paid Only):</strong> ${realizedProfit}
-      </p>
-
-      <p className="font-bold text-green-600">
-        Margin: {margin}%
-      </p>
-    </div>
-  </div>
-</div>          
-          
-          {/* Costs */}
-          <div className="mb-6">
-            <h2 className="font-semibold text-lg mb-2">Job Costs</h2>
-            <div className="grid grid-cols-3 gap-4">
-              <input
-                type="number"
-                value={selectedJob.materials}
-                onChange={(e) =>
-                  updateJob("materials", e.target.value)
-                }
-                className="border p-2 rounded"
-                placeholder="Materials"
-              />
-              <input
-                type="number"
-                value={selectedJob.labor}
-                onChange={(e) =>
-                  updateJob("labor", e.target.value)
-                }
-                className="border p-2 rounded"
-                placeholder="Labor"
-              />
-              <input
-                type="number"
-                value={selectedJob.other}
-                onChange={(e) =>
-                  updateJob("other", e.target.value)
-                }
-                className="border p-2 rounded"
-                placeholder="Other"
-              />
+            {/* Line Chart */}
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={businessTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="Revenue" />
+                  <Line type="monotone" dataKey="Profit" />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
-
-          {/* Profit Summary */}
-          <div className="bg-gray-100 p-4 rounded-lg">
-            {(() => {
-              const { totalCosts, expectedProfit, realizedProfit, margin } =
-                calculateMetrics(selectedJob);
-
-              return (
-                <>
-                  <h2 className="font-semibold text-lg mb-3">
-                    Profit Summary
-                  </h2>
-                  <p>Total Costs: ${totalCosts}</p>
-                  <p>Expected Profit: ${expectedProfit}</p>
-                  <p>Realized Profit (Paid Only): ${realizedProfit}</p>
-                  <p className="font-bold text-green-600">
-                    Margin: {margin}%
-                  </p>
-                </>
-              );
-            })()}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
 }
-
-
-
-
