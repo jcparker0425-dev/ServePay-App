@@ -34,6 +34,23 @@ export default function App() {
     },
   ]);
 
+  const [invoiceTotal, setInvoiceTotal] = useState(0);
+const [paidAmount, setPaidAmount] = useState(0);
+
+const [materialsCost, setMaterialsCost] = useState(0);
+const [laborCost, setLaborCost] = useState(0);
+const [otherCost, setOtherCost] = useState(0);
+  const totalExpenses = materialsCost + laborCost + otherCost;
+
+const expectedProfit = invoiceTotal - totalExpenses;
+const realizedProfit = paidAmount - totalExpenses;
+
+const margin =
+  invoiceTotal > 0
+    ? ((expectedProfit / invoiceTotal) * 100).toFixed(1)
+    : 0;
+
+const outstanding = invoiceTotal - paidAmount;
   const [selectedJobId, setSelectedJobId] = useState(1);
 
   const selectedJob = jobs.find((job) => job.id === selectedJobId);
@@ -293,4 +310,5 @@ export default function App() {
     </div>
   );
 }
+
 
