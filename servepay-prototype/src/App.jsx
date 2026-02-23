@@ -34,6 +34,8 @@ export default function App() {
     },
   ]);
 
+  const [loggedIn, setLoggedIn] = useState(false);
+  
   const [invoiceTotal, setInvoiceTotal] = useState(0);
 const [paidAmount, setPaidAmount] = useState(0);
 
@@ -310,5 +312,6 @@ const outstanding = invoiceTotal - paidAmount;
     </div>
   );
 }
+
 
 
