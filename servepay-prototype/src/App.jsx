@@ -119,6 +119,120 @@ export default function App() {
             </div>
           </div>
 
+<div className="mt-8 bg-white text-gray-800 rounded-xl shadow-lg p-6">
+
+  <h2 className="text-xl font-bold mb-6">
+    Job Financial Overview
+  </h2>
+
+  {/* ================= INVOICE SECTION ================= */}
+  <div className="mb-6">
+    <h3 className="font-semibold text-lg mb-3 text-indigo-600">
+      Invoice & Payment
+    </h3>
+
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Total Invoice Amount ($)
+        </label>
+        <input
+          type="number"
+          value={invoiceTotal}
+          onChange={(e) => setInvoiceTotal(Number(e.target.value))}
+          className="border p-2 rounded w-full"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Amount Paid ($)
+        </label>
+        <input
+          type="number"
+          value={paidAmount}
+          onChange={(e) => setPaidAmount(Number(e.target.value))}
+          className="border p-2 rounded w-full"
+        />
+      </div>
+    </div>
+
+    <p className="mt-2 text-sm text-gray-600">
+      Outstanding Balance: ${outstanding}
+    </p>
+  </div>
+
+  {/* ================= EXPENSE SECTION ================= */}
+  <div className="mb-6">
+    <h3 className="font-semibold text-lg mb-3 text-indigo-600">
+      Job Expenses
+    </h3>
+
+    <div className="grid grid-cols-3 gap-4">
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Materials Cost ($)
+        </label>
+        <input
+          type="number"
+          value={materialsCost}
+          onChange={(e) => setMaterialsCost(Number(e.target.value))}
+          className="border p-2 rounded w-full"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Labor Cost ($)
+        </label>
+        <input
+          type="number"
+          value={laborCost}
+          onChange={(e) => setLaborCost(Number(e.target.value))}
+          className="border p-2 rounded w-full"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Other Expenses ($)
+        </label>
+        <input
+          type="number"
+          value={otherCost}
+          onChange={(e) => setOtherCost(Number(e.target.value))}
+          className="border p-2 rounded w-full"
+        />
+      </div>
+    </div>
+
+    <p className="mt-2 text-sm text-gray-600">
+      Total Job Expenses: ${totalExpenses}
+    </p>
+  </div>
+
+  {/* ================= PROFIT SUMMARY ================= */}
+  <div className="bg-gray-100 p-4 rounded-lg">
+    <h3 className="font-semibold text-lg mb-3">
+      Profit Summary
+    </h3>
+
+    <div className="space-y-2">
+      <p>
+        <strong>Expected Profit:</strong> ${expectedProfit}
+      </p>
+
+      <p>
+        <strong>Realized Profit (Paid Only):</strong> ${realizedProfit}
+      </p>
+
+      <p className="font-bold text-green-600">
+        Margin: {margin}%
+      </p>
+    </div>
+  </div>
+</div>          
+          
           {/* Costs */}
           <div className="mb-6">
             <h2 className="font-semibold text-lg mb-2">Job Costs</h2>
@@ -179,3 +293,4 @@ export default function App() {
     </div>
   );
 }
+
