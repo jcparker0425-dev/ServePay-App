@@ -78,6 +78,41 @@ const outstanding = invoiceTotal - paidAmount;
   };
 
   return (
+    if (!loggedIn) {
+  return (
+    <div className="min-h-screen bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center p-6">
+      <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md text-gray-800">
+        <h1 className="text-2xl font-bold mb-6 text-center">
+          ServePay Contractor Portal
+        </h1>
+
+        <div className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email Address"
+            className="w-full border p-3 rounded"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full border p-3 rounded"
+          />
+
+          <button
+            onClick={() => setLoggedIn(true)}
+            className="w-full bg-indigo-600 text-white p-3 rounded font-semibold hover:bg-indigo-700"
+          >
+            Login
+          </button>
+        </div>
+
+        <p className="text-sm text-gray-500 mt-4 text-center">
+          Demo Access – No real login required
+        </p>
+      </div>
+    </div>
+  );
+}
     <div className="min-h-screen bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
       <div className="max-w-6xl mx-auto grid grid-cols-3 gap-6">
 
@@ -312,6 +347,7 @@ const outstanding = invoiceTotal - paidAmount;
     </div>
   );
 }
+
 
 
 
