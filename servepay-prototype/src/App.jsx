@@ -1,246 +1,118 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
   LineChart,
   Line,
+  XAxis,
+  YAxis,
   CartesianGrid,
-  Legend,
+  Tooltip,
+  ResponsiveContainer,
 } from "recharts";
 
+const data = [
+  { name: "Jan", value: 400 },
+  { name: "Feb", value: 600 },
+  { name: "Mar", value: 500 },
+  { name: "Apr", value: 700 },
+  { name: "May", value: 650 },
+];
+
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [view, setView] = useState("job");
 
-  const jobs = [
-    {
-      name: "Smith Water Heater Install",
-      invoice: 2000,
-      paid: 1500,
-      materials: 500,
-      labor: 500,
-      other: 200,
-    },
-    {
-      name: "Johnson AC Repair",
-      invoice: 1200,
-      paid: 1200,
-      materials: 200,
-      labor: 400,
-      other: 100,
-    },
-    {
-      name: "Brown Panel Upgrade",
-      invoice: 3500,
-      paid: 3500,
-      materials: 1200,
-      labor: 900,
-      other: 300,
-    },
-  ];
+  // 🔐 Simple Demo Login Screen
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+        <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-6 text-center">
+            ServePay Demo Login
+          </h1>
 
-  const selectedJob = jobs[0];
-
-  const totalCost =
-    selectedJob.materials +
-    selectedJob.labor +
-    selectedJob.other;
-
-  const profit = selectedJob.invoice - totalCost;
-  const margin = ((profit / selectedJob.invoice) * 100).toFixed(1);
-
-  const totalRevenue = jobs.reduce((sum, j) => sum + j.invoice, 0);
-  const totalCosts = jobs.reduce(
-    (sum, j) => sum + j.materials + j.labor + j.other,
-    0
-  );
-  const totalProfit = totalRevenue - totalCosts;
-  const avgMargin = (
-    (totalProfit / totalRevenue) *
-    100
-  ).toFixed(1);
-
-  const businessTrendData = jobs.map((j) => {
-    const cost = j.materials + j.labor + j.other;
-    return {
-      name: j.name,
-      Revenue: j.invoice,
-      Profit: j.invoice - cost,
-    };
-  });
-
-  const jobBarData = [
-    { name: "Invoice", value: selectedJob.invoice },
-    { name: "Cost", value: totalCost },
-    { name: "Profit", value: profit },
-  ];
-
-  return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
-
-        {/* Toggle */}
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={() => setView("job")}
-            className={`px-4 py-2 rounded ${
-              view === "job"
-                ? "bg-indigo-600 text-white"
-                : "bg-white"
-            }`}
-          >
-            Job View
-          </button>
+          <input
+            type="text"
+            placeholder="Email"
+            className="w-full mb-4 px-4 py-2 border rounded-lg"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full mb-6 px-4 py-2 border rounded-lg"
+          />
 
           <button
-            onClick={() => setView("business")}
-            className={`px-4 py-2 rounded ${
-              view === "business"
-                ? "bg-indigo-600 text-white"
-                : "bg-white"
-            }`}
+            onClick={() => setIsLoggedIn(true)}
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
           >
-            Business View
+            Login
           </button>
         </div>
+      </div>
+    );
+  }
 
-        {/* ================= JOB VIEW ================= */}
-        {view === "job" && (
-          <div className="bg-white rounded-xl shadow p-6 space-y-6">
+  // 📊 Main Dashboard
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="max-w-5xl mx-auto">
 
-            <h2 className="text-2xl font-bold">
-              {selectedJob.name}
-            </h2>
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold mb-4 md:mb-0">
+            ServePay Dashboard
+          </h1>
 
-            {/* Snapshot */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-              <div>
-                <p className="text-gray-500 text-sm">Invoice</p>
-                <p className="text-xl font-bold">
-                  ${selectedJob.invoice}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">Collected</p>
-                <p className="text-xl font-bold">
-                  ${selectedJob.paid}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">Total Cost</p>
-                <p className="text-xl font-bold">
-                  ${totalCost}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">Profit</p>
-                <p
-                  className={`text-xl font-bold ${
-                    profit >= 0
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  ${profit}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">Margin</p>
-                <p className="text-xl font-bold">
-                  {margin}%
-                </p>
-              </div>
-            </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setView("job")}
+              className={`px-4 py-2 rounded-lg ${
+                view === "job"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200"
+              }`}
+            >
+              Job View
+            </button>
 
-            {/* Bar Chart */}
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={jobBarData}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="value" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <button
+              onClick={() => setView("business")}
+              className={`px-4 py-2 rounded-lg ${
+                view === "business"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200"
+              }`}
+            >
+              Business View
+            </button>
 
-            {/* Expense Breakdown */}
-            <div>
-              <h3 className="text-lg font-semibold mb-2">
-                What This Job Cost Me
-              </h3>
-              <div className="grid grid-cols-3 gap-4">
-                <div>Materials: ${selectedJob.materials}</div>
-                <div>Labor: ${selectedJob.labor}</div>
-                <div>Other: ${selectedJob.other}</div>
-              </div>
-            </div>
+            <button
+              onClick={() => setIsLoggedIn(false)}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg"
+            >
+              Logout
+            </button>
           </div>
-        )}
+        </div>
 
-        {/* ================= BUSINESS VIEW ================= */}
-        {view === "business" && (
-          <div className="bg-white rounded-xl shadow p-6 space-y-6">
+        {/* Chart Card */}
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-lg font-semibold mb-4 capitalize">
+            {view} Revenue Overview
+          </h2>
 
-            <h2 className="text-2xl font-bold">
-              Business Performance
-            </h2>
-
-            {/* Scoreboard */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-              <div>
-                <p className="text-gray-500 text-sm">
-                  Total Revenue
-                </p>
-                <p className="text-xl font-bold">
-                  ${totalRevenue}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">
-                  Total Costs
-                </p>
-                <p className="text-xl font-bold">
-                  ${totalCosts}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">
-                  Net Profit
-                </p>
-                <p className="text-xl font-bold text-green-600">
-                  ${totalProfit}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">
-                  Avg Margin
-                </p>
-                <p className="text-xl font-bold">
-                  {avgMargin}%
-                </p>
-              </div>
-            </div>
-
-            {/* Line Chart */}
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={businessTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="Revenue" />
-                  <Line type="monotone" dataKey="Profit" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="value" stroke="#2563eb" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
