@@ -22,35 +22,23 @@ export default function App() {
   const [view, setView] = useState("job");
 
   // 🔐 Simple Demo Login Screen
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-        <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-          <h1 className="text-2xl font-bold mb-6 text-center">
-            ServePay Demo Login
-          </h1>
+if (!isLoggedIn) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-6">
+      <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-sm text-center">
+        <h1 className="text-2xl font-bold mb-6">ServePay</h1>
+        <p className="text-sm text-gray-500 mb-6">Demo Login</p>
 
-          <input
-            type="text"
-            placeholder="Email"
-            className="w-full mb-4 px-4 py-2 border rounded-lg"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full mb-6 px-4 py-2 border rounded-lg"
-          />
-
-          <button
-            onClick={() => setIsLoggedIn(true)}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-          >
-            Login
-          </button>
-        </div>
+        <button
+          onClick={() => setIsLoggedIn(true)}
+          className="w-full bg-gradient-to-r from-blue-600 to-green-500 text-white py-3 rounded-xl font-semibold"
+        >
+          Enter Demo
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   // 📊 Main Dashboard
   return (
