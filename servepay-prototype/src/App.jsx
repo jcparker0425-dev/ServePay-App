@@ -50,7 +50,12 @@ if (!isLoggedIn) {
           <h1 className="text-2xl font-bold mb-4 md:mb-0">
             ServePay Dashboard
           </h1>
-
+<button
+  onClick={() => setIsLoggedIn(false)}
+  className="text-xs bg-white text-blue-600 px-3 py-1 rounded-lg"
+>
+  Logout
+</button>
           <div className="flex gap-2">
             <button
               onClick={() => setView("job")}
