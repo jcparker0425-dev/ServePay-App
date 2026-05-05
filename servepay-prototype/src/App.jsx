@@ -1,110 +1,137 @@
-import { useState } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import React, { useState } from "react";
 
-const data = [
-  { name: "Jan", value: 400 },
-  { name: "Feb", value: 600 },
-  { name: "Mar", value: 500 },
-  { name: "Apr", value: 700 },
-  { name: "May", value: 650 },
+/* ---------------- MOCK DATA ---------------- */
+const jobs = [
+  {
+    id: "JOB-1",
+    name: "Smith Water Heater Install",
+    invoice: 2000,
+    paid: 1500,
+    materials: 500,
+    labor: 500,
+    other: 200,
+  },
+  {
+    id: "JOB-2",
+    name: "Johnson AC Repair",
+    invoice: 1200,
+    paid: 1200,
+    materials: 200,
+    labor: 400,
+    other: 100,
+  },
 ];
 
+/* ---------------- APP ---------------- */
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [view, setView] = useState("job");
+  const [selectedJob, setSelectedJob] = useState(jobs[0]);
 
-  // 🔐 Simple Demo Login Screen
-if (!isLoggedIn) {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-6">
-      <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-sm text-center">
-        <h1 className="text-2xl font-bold mb-6">ServePay</h1>
-        <p className="text-sm text-gray-500 mb-6">Demo Login</p>
+  const totalCost =
+    selectedJob.materials +
+    selectedJob.labor +
+    selectedJob.other;
 
-        <button
-          onClick={() => setIsLoggedIn(true)}
-          className="w-full bg-gradient-to-r from-blue-600 to-green-500 text-white py-3 rounded-xl font-semibold"
-        >
-          Enter Demo
-        </button>
+  const profit = selectedJob.invoice - totalCost;
+  const margin = ((profit / selectedJob.invoice) * 100).toFixed(1);
+  const outstanding = selectedJob.invoice - selectedJob.paid;
+
+  /* ---------------- LOGIN ---------------- */
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-6">
+        <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-sm text-center">
+          <h1 className="text-2xl font-bold mb-6">ServePay</h1>
+          <button
+            onClick={() => setIsLoggedIn(true)}
+            className="w-full bg-gradient-to-r from-blue-600 to-green-500 text-white py-3 rounded-xl font-semibold"
+          >
+            Enter Demo
+          </button>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-  // 📊 Main Dashboard
+  /* ---------------- DASHBOARD ---------------- */
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex justify-center p-4">
+      <div className="w-full max-w-sm bg-white rounded-3xl shadow-xl overflow-hidden">
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold mb-4 md:mb-0">
-            ServePay Dashboard
-          </h1>
-<button
-  onClick={() => setIsLoggedIn(false)}
-  className="text-xs bg-white text-blue-600 px-3 py-1 rounded-lg"
->
-  Logout
-</button>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setView("job")}
-              className={`px-4 py-2 rounded-lg ${
-                view === "job"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
-              }`}
-            >
-              Job View
-            </button>
-
-            <button
-              onClick={() => setView("business")}
-              className={`px-4 py-2 rounded-lg ${
-                view === "business"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
-              }`}
-            >
-              Business View
-            </button>
-
-            <button
-              onClick={() => setIsLoggedIn(false)}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg"
-            >
-              Logout
-            </button>
+        <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white p-5 flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-semibold">ServePay</h1>
+            <p className="text-xs opacity-80">Contractor Dashboard</p>
           </div>
+          <button
+            onClick={() => setIsLoggedIn(false)}
+            className="text-xs bg-white text-blue-600 px-3 py-1 rounded-lg"
+          >
+            Logout
+          </button>
         </div>
 
-        {/* Chart Card */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-lg font-semibold mb-4 capitalize">
-            {view} Revenue Overview
-          </h2>
+        <div className="p-5 space-y-5">
 
-          <div className="h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="value" stroke="#2563eb" />
-              </LineChart>
-            </ResponsiveContainer>
+          {/* Job Selector */}
+          <select
+            className="w-full p-2 border rounded-lg"
+            value={selectedJob.id}
+            onChange={(e) =>
+              setSelectedJob(
+                jobs.find((j) => j.id === e.target.value)
+              )
+            }
+          >
+            {jobs.map((job) => (
+              <option key={job.id} value={job.id}>
+                {job.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Snapshot */}
+          <div className="bg-blue-50 p-4 rounded-xl">
+            <p className="text-sm text-gray-600">Invoice</p>
+            <p className="text-xl font-bold">${selectedJob.invoice}</p>
+
+            <p className="text-sm text-gray-600 mt-2">Collected</p>
+            <p className="text-lg font-semibold">${selectedJob.paid}</p>
+
+            <p className="text-xs text-gray-500 mt-1">
+              Outstanding: ${outstanding}
+            </p>
           </div>
+
+          {/* Expenses */}
+          <div className="bg-gray-50 p-4 rounded-xl">
+            <p className="text-sm font-semibold mb-2">
+              What This Job Cost Me
+            </p>
+            <div className="text-sm space-y-1">
+              <p>Materials: ${selectedJob.materials}</p>
+              <p>Labor: ${selectedJob.labor}</p>
+              <p>Other: ${selectedJob.other}</p>
+              <p className="font-semibold mt-2">
+                Total Cost: ${totalCost}
+              </p>
+            </div>
+          </div>
+
+          {/* Profit */}
+          <div className="bg-gray-100 p-4 rounded-xl text-center">
+            <p className="text-sm text-gray-600">Profit</p>
+            <p
+              className={`text-2xl font-bold ${
+                profit >= 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              ${profit}
+            </p>
+            <p className="text-sm mt-1">Margin: {margin}%</p>
+          </div>
+
         </div>
       </div>
     </div>
